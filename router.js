@@ -1,6 +1,7 @@
+var router = require('express').Router();
 const Authentication = require('./app/controller/authentication');
-// const profileData = require('./app/controller/profile');
-// const stripeKeysDev = require('./app/controller/payments');
+const profileData = require('./app/controller/profile');
+const stripeKeysDev = require('./app/controller/payments');
 var cors = require('cors')
 
 
@@ -9,7 +10,7 @@ module.exports = function (app) {
 
     //post routes
     //app.post('/signin',requireSignin,  Authentication.signin);
-    app.post('/signup', cors(), Authentication.signup);
+    router.post('/signup', cors(), Authentication.signup);
     // app.post('/signin', cors(), Authentication.signin);
     // app.post('/postemail', cors(), Authentication.forgotpasword);
     // app.post('/changepassword', cors(), Authentication.changePassword);

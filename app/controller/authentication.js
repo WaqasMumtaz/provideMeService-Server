@@ -8,7 +8,6 @@ const crypto = require('crypto');
 const nodemailer = require('nodemailer');
 const bcrypt = require('bcrypt-nodejs');
 
-
 //creating token for user or through user.id
 function tokenForUser(user){
   console.log(user,'tokennnnnnn')
@@ -16,20 +15,24 @@ function tokenForUser(user){
   return jwt.encode({ sub: user.id, iat: timestamp}, 'getfitfar3344556698765432');
 }
 
-var smtpTransport = nodemailer.createTransport("SMTP",{
-    service: "Gmail",
-    auth: {
-      user: "drens224@gmail.com",
-      pass: "drent1234"
-    },
-    tls: {
-        rejectUnauthorized: true
-    }
+// var smtpTransport = nodemailer.createTransport("SMTP",{
+//     service: "Gmail",
+//     auth: {
+//       user: "drens224@gmail.com",
+//       pass: "drent1234"
+//     },
+//     tls: {
+//         rejectUnauthorized: true
+//     }
 
-});
+// });
+
 
 exports.signup = function(req, res, next){
-  console.log('API HIT')
+  // console.log('API HIT successfully')
+  // res.send({
+  //   ok:true
+  // })
   const email = req.body.email;
   const password = req.body.password;
   const mobileNo = req.body.mobileNo;
@@ -75,6 +78,7 @@ exports.signup = function(req, res, next){
         code:200,
       });
     });
+
 }
 
 exports.getemail = function(req,res,next){
@@ -107,7 +111,7 @@ exports.signin = async (req, res, next) => {
   //console.log(useremail)
   User.findOne({email:useremail},function(err,user){
     if(user){
-      //onsole.log(user,'database user');
+      console.log(user,'database user');
       //const user = this;
       if(user.type == 'trainee'){
 
@@ -513,3 +517,5 @@ exports.changePassword = function(req,res,next){
       }
     })
 }
+
+

@@ -22,10 +22,8 @@ const userSchema = new Schema({
   forgotPasswordRand:{type:String},
   resetPasswordToken:{type:String},
   resetPasswordExpires:{type:String},
-  pedometer:{type:Boolean} 
+  pedometer:{type:Boolean}
 })
-
-
 //on save Hook, encrypt password
 //Before saving modal run this code
 userSchema.pre('save',function(next){
@@ -50,10 +48,8 @@ userSchema.methods.comparePassword = function(candidatePassword, callback){
     if(err){ return callback(err); }
     callback(null, isMatch);
   })
-}
+} 
 
-
-//model class
 module.exports = mongoose.model('user',userSchema);
 
 //export model

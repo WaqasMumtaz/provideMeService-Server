@@ -55,9 +55,9 @@ const port = app.get('port');
 
 app.use('/', router);
 
-app.get('/', (req , res)=>{
-    res.send('<h1>Welcome Provide Me Service , Server</h1>')
-})
+// app.get('/', (req , res)=>{
+//     res.send('<h1>Welcome Provide Me Service , Server</h1>')
+// })
 
  app.listen(port , ()=>{
      console.log('Server Port >>', port);

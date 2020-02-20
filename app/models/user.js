@@ -22,7 +22,8 @@ const userSchema = new Schema({
   forgotPasswordRand:{type:String},
   resetPasswordToken:{type:String},
   resetPasswordExpires:{type:String},
-  pedometer:{type:Boolean}
+  pedometer:{type:Boolean},
+  serviceProvider:{type:String}
 })
 //on save Hook, encrypt password
 //Before saving modal run this code

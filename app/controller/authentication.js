@@ -43,9 +43,10 @@ exports.signup = function(req, res, next){
   const type = req.body.type;
   const deviceToken = req.body.deviceToken;
   const blocked = 'false';
+  const serviceProvider = req.body.serviceProvider;
   console.log(email +''+ password +''+ mobileNo +''+verified);
-  if(!email || !password){
-      return res.status(422).send({error:'you must provide email and password'})
+  if(!email || !password || !serviceProvider){
+      return res.status(422).send({error:'you must provide email and password and select sevice type'})
     }
 
     //see if a user given email exist show error
@@ -66,7 +67,8 @@ exports.signup = function(req, res, next){
         verified:verified,
         blocked:blocked,
         type:type,
-        deviceToken:deviceToken
+        deviceToken:deviceToken,
+        serviceProvider:serviceProvider
       });
       console.log(user,'checkingggggggg');
       user.save(function(err){
@@ -108,6 +110,10 @@ exports.signin = async (req, res, next) => {
   let trainnerSpecificProfile= [];
   var useremail = req.body.email;
   var password = req.body.password;
+  // res.send({
+  //    ok:true
+
+  // })
   //console.log(useremail)
   User.findOne({email:useremail},function(err,user){
     if(user){

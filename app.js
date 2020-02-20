@@ -22,19 +22,19 @@ require('./app/models/profile');
 require('./app/models/payment');
 
 
-
+// require('./app/controller/home');
 const router = require('./router')
 
 
 app.use(bodyParser.json()) // handle json data
 app.use(bodyParser.urlencoded({ extended: true })) // handle URL-encoded data
-app.use(function(req, res, next) {
-  res.header("Access-Control-Allow-Origin", "*");
-  res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
-  next();
-});
-router(app);
-app.use(cookieParser());
+// app.use(function(req, res, next) {
+//   res.header("Access-Control-Allow-Origin", "*");
+//   res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
+//   next();
+// });
+// router(app);
+// app.use(cookieParser());
 
 //Connecting database
 
@@ -50,7 +50,7 @@ db.once('open', function (callback) {
 
 
 
-app.set('port' , process.env.PORT || 5000)
+app.set('port' , process.env.PORT || 8000)
 const port = app.get('port');
 
 app.use('/', router);

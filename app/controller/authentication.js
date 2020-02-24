@@ -43,9 +43,11 @@ exports.signup = function(req, res, next){
   const type = req.body.type;
   const deviceToken = req.body.deviceToken;
   const blocked = 'false';
-  const serviceProvider = req.body.serviceProvider;
+  const service = req.body.service;
+  const nicNumber = req.body.nicNumber;
+  const address = req.body.address;
   console.log(email +''+ password +''+ mobileNo +''+verified);
-  if(!email || !password || !serviceProvider){
+  if(!email || !password || !service){
       return res.status(422).send({error:'you must provide email and password and select sevice type'})
     }
 
@@ -68,7 +70,9 @@ exports.signup = function(req, res, next){
         blocked:blocked,
         type:type,
         deviceToken:deviceToken,
-        serviceProvider:serviceProvider
+        service:service,
+        nicNumber:nicNumber,
+        address:address
       });
       console.log(user,'checkingggggggg');
       user.save(function(err){
@@ -119,7 +123,7 @@ exports.signin = async (req, res, next) => {
     if(user){
       console.log(user,'database user');
       //const user = this;
-      if(user.type == 'trainee'){
+      if(user.service == 'provider'){
 
         if((user.trainnerId == undefined || user.trainnerId == null)){
         bcrypt.compare(password, user.password, function(err, isMatch){
@@ -131,8 +135,10 @@ exports.signin = async (req, res, next) => {
           _id:user._id,
           email:user.email,
           name:user.name,
-          type:user.type,
           code:200,
+          service:user.service,
+          nicNumber:user.nicNumber,
+          address:user.address,
           deviceToken:user.deviceToken || '',
           //username:user.firstName +''+ user.lastName
         });
@@ -146,111 +152,10 @@ exports.signin = async (req, res, next) => {
           //console.log(isMatch);
         })
       }
-
-      else{
-        console.log('check')
-      if(user.type == 'trainee'){
-        console.log('trainny');
-        profile.find({"userId":user.trainnerId},function(err,trainnerProfile){
-          if(err){}
-          else if(trainnerProfile){
-            trainnerSpecificProfile = trainnerProfile
-            profile.find({"userId":user._id},function(err,specificUserProfile){
-              if(err){
-                specific_User_Profile = err;
-              }
-              else if(specificUserProfile){
-                //console.log(specificUserProfile)
-                specific_User_Profile = specificUserProfile;
-                bcrypt.compare(password, user.password, function(err, isMatch){
-                  if(err){ return callback(err); }
-                  //callback(null, isMatch);
-                  if(isMatch){
-                    res.send({
-                  token: tokenForUser(user),
-                  _id:user._id,
-                  email:user.email,
-                  name:user.name,
-                  assignTrainner:user.assignTrainner,
-                  assignTrainny:user.assignTrainny,
-                  tainnyId:user.tainnyId,
-                  type:user.type,
-                  trainnerId:user.trainnerId,
-                  profile:specific_User_Profile,
-                  trainnyProfiledata:trainnySpecificProfile,
-                  trainnerProfileData:trainnerSpecificProfile,
-                  deviceToken:user.deviceToken || '',
-                  code:200,
-                  //username:user.firstName +''+ user.lastName
-                });
-                  }
-                  else if(!isMatch){
-                    res.send({
-                      msg:'password not match',
-                      Match:isMatch
-                    })
-                  }
-                  //console.log(isMatch);
-                })
-              }
-            })
-          }
-        })
-      } 
-    
-      else if(user.type == 'trainner'){
-        console.log('trainner');
-        profile.find({"userId":user.tainnyId},function(err,trainnyProfile){
-          if(err){res.send('error',err)}
-          else if(trainnyProfile){
-            trainnySpecificProfile = trainnyProfile
-            profile.find({"userId":user._id},function(err,specificUserProfile){
-              if(err){
-                specific_User_Profile = err;
-              }
-              else if(specificUserProfile){
-                //console.log(specificUserProfile)
-                specific_User_Profile = specificUserProfile;
-                bcrypt.compare(password, user.password, function(err, isMatch){
-                  if(err){ return callback(err); }
-                  //callback(null, isMatch);
-                  if(isMatch){
-                    res.send({
-                  token: tokenForUser(user),
-                  _id:user._id,
-                  email:user.email,
-                  name:user.name,
-                  assignTrainner:user.assignTrainner,
-                  assignTrainny:user.assignTrainny,
-                  tainnyId:user.tainnyId,
-                  trainnerId:user.trainnerId,
-                  type:user.type,
-                  profile:specific_User_Profile,
-                  trainnyProfiledata:trainnySpecificProfile,
-                  trainnerProfileData:trainnerSpecificProfile,
-                  deviceToken:user.deviceToken || '',
-                  code:200,
-                  //username:user.firstName +''+ user.lastName
-                });
-                  }
-                  else if(!isMatch){
-                    res.send({
-                      msg:'password not match',
-                      Match:isMatch
-                    })
-                  }
-                  //console.log(isMatch);
-                })
-              }
-            })
-            //res.send('checking')
-          }
-        })
-      }
     }
-  }
-  else if(user.type == 'trainner'){
-    if((user.tainnyId == undefined || user.tainnyId == null)){
+    else if(user.service == 'seeker'){
+
+      if((user.trainnerId == undefined || user.trainnerId == null)){
       bcrypt.compare(password, user.password, function(err, isMatch){
         if(err){ return callback(err); }
         //callback(null, isMatch);
@@ -260,9 +165,9 @@ exports.signin = async (req, res, next) => {
         _id:user._id,
         email:user.email,
         name:user.name,
-        type:user.type,
-        deviceToken:user.deviceToken || '',
         code:200,
+        service:user.service,
+        deviceToken:user.deviceToken || '',
         //username:user.firstName +''+ user.lastName
       });
         }
@@ -275,123 +180,11 @@ exports.signin = async (req, res, next) => {
         //console.log(isMatch);
       })
     }
-    else{
-      console.log('check')
-    if(user.type == 'trainee'){
-      console.log('trainny');
-      profile.find({"userId":user.trainnerId},function(err,trainnerProfile){
-        if(err){}
-        else if(trainnerProfile){
-          trainnerSpecificProfile = trainnerProfile
-          profile.find({"userId":user._id},function(err,specificUserProfile){
-            if(err){
-              specific_User_Profile = err;
-            }
-            else if(specificUserProfile){
-              //console.log(specificUserProfile)
-              specific_User_Profile = specificUserProfile;
-              bcrypt.compare(password, user.password, function(err, isMatch){
-                if(err){ return callback(err); }
-                //callback(null, isMatch);
-                if(isMatch){
-                  res.send({
-                token: tokenForUser(user),
-                _id:user._id,
-                email:user.email,
-                name:user.name,
-                assignTrainner:user.assignTrainner,
-                assignTrainny:user.assignTrainny,
-                tainnyId:user.tainnyId,
-                type:user.type,
-                trainnerId:user.trainnerId,
-                profile:specific_User_Profile,
-                trainnyProfiledata:trainnySpecificProfile,
-                trainnerProfileData:trainnerSpecificProfile,
-                deviceToken:user.deviceToken || '',
-                code:200,
-                //username:user.firstName +''+ user.lastName
-              });
-                }
-                else if(!isMatch){
-                  res.send({
-                    msg:'password not match',
-                    Match:isMatch
-                  })
-                }
-                //console.log(isMatch);
-              })
-            }
-          })
-        }
-      })
-    } 
-  
-    else if(user.type == 'trainner'){
-      console.log('trainner');
-      for(var i=0;i<(user.tainnyId).length;i++){
-        console.log(user.tainnyId[i],'checkingggggggg')
-         profile.find({"userId":{$in:user.tainnyId[i]}}, function(err,trainnyProfile){
-          if(err){res.send('error',err)}
-          else if(trainnyProfile){
-            console.log(trainnyProfile)
-               trainnySpecificProfile.push(trainnyProfile)
-          }
-        })
-      }
-      // profile.find({"userId":user.tainnyId},function(err,trainnyProfile){
-      //   if(err){res.send('error',err)}
-      //   else if(trainnyProfile){
-      //     trainnySpecificProfile = trainnyProfile
-          profile.find({"userId":user._id},function(err,specificUserProfile){
-            if(err){
-              specific_User_Profile = err;
-            }
-            else if(specificUserProfile){
-              //console.log(specificUserProfile)
-              specific_User_Profile = specificUserProfile;
-              bcrypt.compare(password, user.password, function(err, isMatch){
-                if(err){ return callback(err); }
-                //callback(null, isMatch);
-                if(isMatch){
-                  res.send({
-                token: tokenForUser(user),
-                _id:user._id,
-                email:user.email,
-                name:user.name,
-                assignTrainner:user.assignTrainner,
-                assignTrainny:user.assignTrainny,
-                tainnyId:user.tainnyId,
-                trainnerId:user.trainnerId,
-                type:user.type,
-                profile:specific_User_Profile,
-                trainnyProfiledata:trainnySpecificProfile,
-                trainnerProfileData:trainnerSpecificProfile,
-                deviceToken:user.deviceToken || '',
-                code:200,
-                //username:user.firstName +''+ user.lastName
-              });
-                }
-                else if(!isMatch){
-                  res.send({
-                    msg:'password not match',
-                    Match:isMatch
-                  })
-                }
-                //console.log(isMatch);
-              })
-            }
-          })
-          //res.send('checking')
-        }
-      //})
-    //}
   }
   }
-    }
-  
-  })
-
+})
 }
+    
 exports.comparePassword = function(req, res, next){
   currentpassword = req.body.password;
   email = req.body.email;
